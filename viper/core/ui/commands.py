@@ -62,6 +62,7 @@ class Commands(object):
     output = []
 
     def __init__(self):
+        db.__init__()
         # Map commands to their related functions.
         self.commands = dict()
         for item in Command().get_subclasses():
@@ -272,7 +273,7 @@ class Copy(Command):
         else:
             src_project = __project__.name
 
-        db.copied_ids = []
+        db.copied_id_sha256 = []
         res = db.copy(__sessions__.current.file.id,
                       src_project=src_project, dst_project=args.project,
                       copy_analysis=True, copy_notes=True, copy_tags=True, copy_children=args.children)

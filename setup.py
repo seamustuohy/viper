@@ -1,11 +1,15 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # This file is part of Viper - https://github.com/viper-framework/viper
 # See the file 'LICENSE' for copying permission.
 
 import os
-import pip
 from setuptools import setup
+
+try:
+    from pip._internal.req import parse_requirements
+except ImportError:
+    from pip.req import parse_requirements
 
 from viper.common.version import __version__
 
@@ -41,7 +45,7 @@ requirement_files = ['requirements-base.txt', "requirements-modules.txt", "requi
 links = []
 requires = []
 for req_file in requirement_files:
-    requirements = pip.req.parse_requirements(req_file, session=pip.download.PipSession())
+    requirements = parse_requirements(req_file, session=False)
 
     for item in requirements:
         # we want to handle package names and also repo urls
