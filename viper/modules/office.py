@@ -21,6 +21,7 @@ from io import BytesIO, open
 
 try:
     import olefile
+    from oletools import msodde
 
     if sys.version_info >= (3, 0):
         from oletools.olevba3 import VBA_Parser, VBA_Scanner
@@ -36,7 +37,6 @@ try:
 except ImportError:
     HAVE_PYXSWF = False
 
-
 class Office(Module):
     cmd = 'office'
     description = 'Office Document Parser'
@@ -50,6 +50,7 @@ class Office(Module):
         self.parser.add_argument('-e', '--export', metavar='dump_path', help='Export all objects')
         self.parser.add_argument('-v', '--vba', action='store_true', help='Analyse Macro Code')
         self.parser.add_argument('-c', '--code', metavar="code_path", help='Export Macro Code to File')
+        self.parser.add_argument('-d', '--dde', action='store_true', help='Get DDE Links')
 
     ##
     # HELPER FUNCTIONS
@@ -460,6 +461,22 @@ class Office(Module):
                 self.log('error', "Not an OLE file")
         elif self.args.vba or self.args.code:
             self.parse_vba(self.args.code)
+        elif self.args.dde:
+            self.get_dde(__sessions__.current.file.path)
         else:
             self.log('error', 'At least one of the parameters is required')
             self.usage()
+
+    def get_dde(self, file_path):
+        try:
+            dde_result = msodde.process_file(file_path, 'only dde')
+            dde_fields = [[i+1, x.strip()] for i,x in enumerate(dde_result.split('\n'))]
+            if (len(dde_fields) == 1) and (dde_fields[0][1] == ''):
+                self.log('info', "No DDE Links Detected.")
+            else:
+                self.log('success', "DDE Links Detected.")
+                header = ['#', 'DDE']
+                self.log('table', dict(header=header,
+                                       rows=dde_fields))
+        except Exception as exc:
+            self.log('error', "Unable to Process File")
