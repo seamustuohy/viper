@@ -471,6 +471,7 @@ class Office(Module):
         try:
             dde_result = msodde.process_file(file_path, 'only dde')
             dde_fields = [[i+1, x.strip()] for i,x in enumerate(dde_result.split('\n'))]
+            self.log('info', dde_result)
             if (len(dde_fields) == 1) and (dde_fields[0][1] == ''):
                 self.log('info', "No DDE Links Detected.")
             else:
