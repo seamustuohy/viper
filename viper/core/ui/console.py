@@ -27,20 +27,14 @@ log = logging.getLogger('viper')
 cfg = __config__
 cfg.parse_http_client()
 
-# For python2 & 3 compat, a bit dirty, but it seems to be the least bad one
-try:
-    input = raw_input
-except NameError:
-    pass
-
 
 def logo():
     print("""         _
         (_)
    _   _ _ ____  _____  ____
-  | | | | |  _ \| ___ |/ ___)
-   \ V /| | |_| | ____| |
-    \_/ |_|  __/|_____)_| v{}
+  | | | | |  _ \\| ___ |/ ___)
+   \\ V /| | |_| | ____| |
+    \\_/ |_|  __/|_____)_| v{}
           |_|
     """.format(__version__))
 
