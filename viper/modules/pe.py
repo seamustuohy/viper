@@ -82,7 +82,7 @@ class PE(Module):
         parser_lang.add_argument('-s', '--scan', action='store_true', help='Scan the repository')
 
         parser_sect = subparsers.add_parser('sections', help='List PE Sections')
-        parser_sect.add_argument('-d', '--dump', metavar='folder', help='Destionation directory to dump all sections in')
+        parser_sect.add_argument('-d', '--dump', metavar='folder', help='Destination directory to dump all sections in')
 
         parser_peh = subparsers.add_parser('pehash', help='Calculate the PEhash and compare them')
         parser_peh.add_argument('-a', '--all', action='store_true', help='Prints the PEhash of all files in the project')
@@ -96,7 +96,7 @@ class PE(Module):
 
     def __check_session(self):
         if not __sessions__.is_set():
-            self.log('error', "No open session")
+            self.log('error', "No open session. This command expects a file to be open.")
             return False
 
         if not self.pe:
@@ -751,7 +751,7 @@ class PE(Module):
 
         def check_module(iat, match):
             for imp in iat:
-                if imp.find(match) != -1:
+                if imp.find(match.encode('utf-8')) != -1:
                     return True
 
             return False
@@ -995,7 +995,7 @@ class PE(Module):
             return
 
         if not HAVE_PEFILE:
-            self.log('error', "Missing dependency, install pefile (`pip install pefile`)")
+            self.log('error', "Missing dependency, install pefile (`pip3 install pefile`)")
             return
 
         if self.args.subname == 'imports':
